@@ -2,6 +2,11 @@
 
 Reimplementation of @karpathy's micrograd course.
 
+## Requirements
+
+* Python 3.10
+* run `pip install -r requirements.txt`
+
 ## Definition
 
 * Micrograd is a light Automatic Gradient implementing backpropagation
