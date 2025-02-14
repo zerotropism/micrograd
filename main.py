@@ -1,137 +1,10 @@
-import math
-import numpy as np
-import matplotlib.pyplot as plt
+import torch
+
+from headers import Value, Neuron, Layer, MLP
 from graph import draw_dot
 
 
-class Value:
-
-    # takes single value that it wraps and keeps track of
-    def __init__(self, data, _children=(), _op="", label=""):
-        self.data = data
-        self.grad = 0.0
-        # function to compute chain ruled gradients
-        self._backward = lambda: None
-        # set for optimization in showing the children of the value for operations
-        self._prev = set(_children)
-        self._op = _op
-        self.label = label
-
-    # prints value.data
-    def __repr__(self):
-        return f"Value(data={self.data})"
-
-    # adds self + other
-    def __add__(self, other):
-        # for convenience in adding non Value objects, if other is not a Value object, convert it to one
-        other = other if isinstance(other, Value) else Value(other)
-        out = Value(self.data + other.data, (self, other), "+")
-
-        # compute the gradients in the context of an addition operation
-        def _backward():
-            # we increment ('+=') so we take into account multiple paths to the same value (multivariate chain rule)
-            # which is OK as long as we initialize the gradient to 0.0 at the beginning of the backward pass
-            self.grad += 1.0 * out.grad
-            other.grad += 1.0 * out.grad
-
-        out._backward = _backward
-
-        return out
-
-    # default addition when unilateral sense is not respected: other + self
-    def __radd__(self, other):
-        return self + other
-
-    # substracts by negation
-    # we first implement a negation function: -self
-    def __neg__(self):
-        return -1.0 * self
-
-    # then we can use the negation function to implement substraction: self - other
-    def __sub__(self, other):
-        return self + (-other)
-
-    # multiplies self * other
-    def __mul__(self, other):
-        other = other if isinstance(other, Value) else Value(other)
-        out = Value(self.data * other.data, (self, other), "*")
-
-        def _backward():
-            self.grad += other.data * out.grad
-            other.grad += self.data * out.grad
-
-        out._backward = _backward
-
-        return out
-
-    # default multiplication when unilateral sense is not respected
-    # other * self when self * other cannot be processed
-    def __rmul__(self, other):
-        return self * other
-
-    # computes division as special case of a more general operation
-    # we first need a power function: self**other
-    def __pow__(self, other):
-        assert isinstance(
-            other, (int, float)
-        ), "only supporting int/float powers for now"
-        out = Value(self.data**other, (self,), f"**{other}")
-
-        def _backward():
-            self.grad += other * self.data ** (other - 1) * out.grad
-
-        out._backward = _backward
-
-        return out
-
-    # then implement the division: self/other
-    def __truediv__(self, other):
-        return self * other**-1
-
-    # computes tanh of a value
-    def tanh(self):
-        x = self.data
-        t = (math.exp(2 * x) - 1) / (math.exp(2 * x) + 1)
-        out = Value(t, (self,), "tanh")
-
-        def _backward():
-            self.grad += (1.0 - t**2) * out.grad
-
-        out._backward = _backward
-
-        return out
-
-    # computes exponentiation
-    def exp(self):
-        x = self.data
-        out = Value(math.exp(x), (self,), "exp")
-
-        def _backward():
-            self.grad = out.data * out.grad
-
-        out._backward = _backward
-
-        return out
-
-    def backward(self):
-        # set a topological sort algorithm
-        topo = []
-        visited = set()
-
-        def build_topo(v):
-            if v not in visited:
-                visited.add(v)
-                for child in v._prev:
-                    build_topo(child)
-                topo.append(v)
-
-        build_topo(self)
-
-        self.grad = 1.0
-        for node in reversed(topo):
-            node._backward()
-
-
+# Python-based construction of a neuron
 # inputs
 x1 = Value(2.0, label="x1")
 x2 = Value(0.0, label="x2")
@@ -159,3 +32,77 @@ o = (e - 1) / (e + 1)
 o.label = "o"
 o.backward()
 draw_dot(o).render("graph", format="svg", cleanup=True, view=True)
+
+# PyTorched-based construction of a neuron
+x1 = torch.Tensor([2.0]).double()
+x1.requires_grad = True
+x2 = torch.Tensor([0.0]).double()
+x2.requires_grad = True
+w1 = torch.Tensor([-3.0]).double()
+w1.requires_grad = True
+w2 = torch.Tensor([1.0]).double()
+w2.requires_grad = True
+b = torch.Tensor([6.8813735870195432]).double()
+b.requires_grad = True
+n = x1 * w1 + x2 * w2 + b
+o = torch.tanh(n)
+
+print(o.data.item())
+o.backward()
+
+print("---")
+print("x2", x2.grad.item())
+print("w2", w2.grad.item())
+print("x1", x1.grad.item())
+print("w1", w1.grad.item())
+
+# Neuron
+x = [2.0, 3.0]
+n = Neuron(2)
+print("Neuron output", n(x))
+
+# Layer
+x = [2.0, 3.0]
+n = Layer(2, 3)
+print("Layer output", n(x))
+
+# MLP
+# 3-dimensional input
+x = [2.0, 3.0, -1.0]
+# 3 inputs into 2 layers of 4 neurons each and 1 output neuron
+n = MLP(3, [4, 4, 1])
+print("MLP output", n(x))
+draw_dot(n(x)).render("graph", format="svg", cleanup=True, view=True)
+
+# dataset & loss
+xs = [
+    [2.0, 3.0, -1.0],
+    [3.0, -1.0, 0.5],
+    [0.5, 1.0, 1.0],
+    [1.0, 1.0, -1.0],
+]
+ys = [1.0, -1.0, -1.0, 1.0]  # desired targets
+
+# show outputs of the nn on these 4 example inputs
+ypred = [n(x) for x in xs]
+print("MLP starting prediction", ypred)
+
+
+for k in range(20):
+
+    # forward pass
+    ypred = [n(x) for x in xs]
+    loss = sum((yout - ygt) ** 2 for ygt, yout in zip(ys, ypred))
+
+    # backward pass
+    # reseting all gradients first
+    for p in n.parameters():
+        p.grad = 0.0
+    loss.backward()
+
+    # update weights
+    for p in n.parameters():
+        p.data += -0.1 * p.grad
+
+    # print current state
+    print(k, "loss =", loss.data, "predictions =", ypred)
