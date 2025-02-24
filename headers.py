@@ -7,6 +7,20 @@ class Value:
     Allows computation of simple operators like addition, substraction, multiplication, division, exponentiation & hyperbolic tengent of Value object.
     Computes the gradient of the value with respect to some other value i.e. its childs.
     The gradient is computed using the chain rule of calculus and stored in the 'grad' attribute.
+
+    Methods:
+        __repr__: String representation of the Value class.
+        __add__: Adds two Value objects.
+        __radd__: Default addition of two Value objects when unilateral sense is not respected.
+        __neg__: Negates a Value object, allowing substraction operation on Value objects.
+        __sub__: Substracts two Value objects.
+        __mul__: Multiplies two Value objects.
+        __rmul__: Default multiplication of two Value objects when unilateral sense is not respected.
+        __pow__: Computes the power of a Value object.
+        __truediv__: Divides two Value objects.
+        tanh: Computes the hyperbolic tangent of a Value object.
+        exp: Computes the exponentiation of a Value object.
+        backward: Backward pass for the Value object.
     """
 
     # takes single value that it wraps and keeps track of
@@ -222,7 +236,12 @@ class Value:
 
 
 class Neuron:
-    """Neuron class that takes number of inputs to the neuron 'nin' and computes the output of the neuron using the tanh activation function."""
+    """Neuron class that takes number of inputs to the neuron 'nin' and computes the output of the neuron using the tanh activation function.
+
+    Methods:
+        __call__: Computes the output of the neuron using the `tanh` activation function.
+        parameters: Returns a list of the parameters of the neuron.
+    """
 
     # constructor takes number of inputs to the neuron 'nin'
     def __init__(self, nin):
@@ -264,7 +283,12 @@ class Neuron:
 
 
 class Layer:
-    """Layer class that takes number of inputs to the layer 'nin' and number of neurons in a single layer 'nout'."""
+    """Layer class that takes number of inputs to the layer 'nin' and number of neurons in a single layer 'nout'.
+
+    Methods:
+        __call__: Computes the output of the layer by calling each neuron in the layer.
+        parameters: Returns a list of the parameters of the layer.
+    """
 
     # 'nin' as number of inputs and 'nout' as number of neurons in a single layer
     def __init__(self, nin, nout):
@@ -298,7 +322,12 @@ class Layer:
 
 
 class MLP:
-    """MLP class that takes number of inputs to the MLP 'nin' and listifying the size of each layer in the MLP 'nouts'."""
+    """MLP class that takes number of inputs to the MLP 'nin' and listifying the size of each layer in the MLP 'nouts'.
+
+    Methods:
+        __call__: Computes the output of the MLP by calling each layer in the MLP.
+        parameters: Returns a list of the parameters of the MLP.
+    """
 
     # 'nin' as number of inputs and 'nouts' as number of neurons in each layer listifying the size of each layer in the MLP
     def __init__(self, nin, nouts):
