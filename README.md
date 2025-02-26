@@ -19,7 +19,7 @@ Fundamentally is the only necessary piece of code to train a model, everything e
 
 ## Content
 
-* Notebook with refresher on calculus and building the entire reasoning
+* `notebook.ipynb` with refresher on calculus and building the entire reasoning
 * `graph.py` file with visualization method
 * `headers.py` file with classes and functions declaration
 * `main.py` script file to illustrate micrograd
