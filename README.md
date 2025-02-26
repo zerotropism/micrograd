@@ -16,3 +16,10 @@ Basically allows back and forth propagations through the mathematical operations
 It implements a value class as well as methods to do so, mostly applying the chain rule from calculus then allowing to query the resulting values at steps.
 
 Fundamentally is the only necessary piece of code to train a model, everything else is about efficiency.
+
+## Content
+
+* Notebook with refresher on calculus and building the entire reasoning
+* `graph.py` file with visualization method
+* `headers.py` file with classes and functions declaration
+* `main.py` script file to illustrate micrograd
