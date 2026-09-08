@@ -25,7 +25,7 @@ def draw_dot(root):
         # for any value in the graph, create a rectangular ('record') node for it
         dot.node(
             name=uid,
-            label="{ %s | data %.4f | grad %.4f }" % (n.label, n.data, n.grad),
+            label=f"{{ {n.label} | data {n.data:.4f} | grad {n.grad:.4f} }}",
             shape="record",
         )
         if n._op:

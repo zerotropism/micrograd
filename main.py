@@ -1,8 +1,7 @@
 import torch
 
-from headers import Value, Neuron, Layer, MLP
 from graph import draw_dot
-
+from headers import MLP, Layer, Neuron, Value
 
 # Python-based construction of a neuron
 # inputs
@@ -89,10 +88,9 @@ print("MLP starting prediction", ypred)
 
 
 for k in range(20):
-
     # forward pass
     ypred = [n(x) for x in xs]
-    loss = sum((yout - ygt) ** 2 for ygt, yout in zip(ys, ypred))
+    loss = sum((yout - ygt) ** 2 for ygt, yout in zip(ys, ypred, strict=True))
 
     # backward pass
     # reseting all gradients first
