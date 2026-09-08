@@ -4,7 +4,8 @@ import random
 
 class Value:
     """Wraps a single value and keep track of its gradient.\n
-    Allows computation of simple operators like addition, substraction, multiplication, division, exponentiation & hyperbolic tengent of Value object.
+    Allows computation of simple operators like addition, substraction, multiplication, division,
+    exponentiation & hyperbolic tengent of Value object.
     Computes the gradient of the value with respect to some other value i.e. its childs.
     The gradient is computed using the chain rule of calculus and stored in the 'grad' attribute.
 
@@ -15,7 +16,8 @@ class Value:
         __neg__: Negates a Value object, allowing substraction operation on Value objects.
         __sub__: Substracts two Value objects.
         __mul__: Multiplies two Value objects.
-        __rmul__: Default multiplication of two Value objects when unilateral sense is not respected.
+        __rmul__: Default multiplication of two Value objects when unilateral sense is not
+            respected.
         __pow__: Computes the power of a Value object.
         __truediv__: Divides two Value objects.
         tanh: Computes the hyperbolic tangent of a Value object.
@@ -61,14 +63,17 @@ class Value:
         Returns:
             Value: result of the addition operation.
         """
-        # for convenience in adding non Value objects, if other is not a Value object, convert it to one
+        # for convenience in adding non Value objects,
+        # if other is not a Value object, convert it to one
         other = other if isinstance(other, Value) else Value(other)
         out = Value(self.data + other.data, (self, other), "+")
 
         # compute the gradients in the context of an addition operation
         def _backward():
-            # we increment ('+=') so we take into account multiple paths to the same value (multivariate chain rule)
-            # which is OK as long as we initialize the gradient to 0.0 at the beginning of the backward pass
+            # we increment ('+=') so we take into account multiple paths to the same value
+            # (multivariate chain rule)
+            # which is OK as long as we initialize the gradient to 0.0 at the beginning of
+            # the backward pass
             self.grad += 1.0 * out.grad
             other.grad += 1.0 * out.grad
 
@@ -155,9 +160,7 @@ class Value:
         Returns:
             Value: result of the power operation.
         """
-        assert isinstance(
-            other, (int, float)
-        ), "only supporting int/float powers for now"
+        assert isinstance(other, (int, float)), "only supporting int/float powers for now"
         out = Value(self.data**other, (self,), f"**{other}")
 
         def _backward():
@@ -236,7 +239,8 @@ class Value:
 
 
 class Neuron:
-    """Neuron class that takes number of inputs to the neuron 'nin' and computes the output of the neuron using the tanh activation function.
+    """Neuron class that takes number of inputs to the neuron 'nin' and computes the output of
+    the neuron using the tanh activation function.
 
     Methods:
         __call__: Computes the output of the neuron using the `tanh` activation function.
@@ -268,7 +272,7 @@ class Neuron:
         # w * x + b
         # raw activation function
         # with b value as the start of the sum instead of default 0.0 for efficiency
-        act = sum((wi * xi for wi, xi in zip(self.w, x)), self.b)
+        act = sum((wi * xi for wi, xi in zip(self.w, x, strict=True)), self.b)
         # to be passed in non-linearity
         out = act.tanh()
         return out
@@ -283,7 +287,8 @@ class Neuron:
 
 
 class Layer:
-    """Layer class that takes number of inputs to the layer 'nin' and number of neurons in a single layer 'nout'.
+    """Layer class that takes number of inputs to the layer 'nin' and number of neurons in a
+    single layer 'nout'.
 
     Methods:
         __call__: Computes the output of the layer by calling each neuron in the layer.
@@ -322,14 +327,16 @@ class Layer:
 
 
 class MLP:
-    """MLP class that takes number of inputs to the MLP 'nin' and listifying the size of each layer in the MLP 'nouts'.
+    """MLP class that takes number of inputs to the MLP 'nin' and listifying the size of each
+    layer in the MLP 'nouts'.
 
     Methods:
         __call__: Computes the output of the MLP by calling each layer in the MLP.
         parameters: Returns a list of the parameters of the MLP.
     """
 
-    # 'nin' as number of inputs and 'nouts' as number of neurons in each layer listifying the size of each layer in the MLP
+    # 'nin' as number of inputs and 'nouts' as number of neurons in each layer listifying the size
+    # of each layer in the MLP
     def __init__(self, nin, nouts):
         """Constructor for the MLP class.
 
