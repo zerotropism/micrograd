@@ -1,3 +1,5 @@
+"""Rendering a computation graph with graphviz, nodes and gradients included."""
+
 from graphviz import Digraph
 
 

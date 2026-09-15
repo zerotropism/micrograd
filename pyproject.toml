@@ -1,16 +1,23 @@
 [project]
 name = "micrograd"
 version = "0.1.0"
+description = "An annotated walk through reverse-mode autodiff, from the derivative to a MLP"
+readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "graphviz>=0.21",
 ]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
     "ipykernel>=7.3.0",
     "jupyter>=1.1.1",
     "matplotlib>=3.11.1",
+    "nbstripout>=0.8",
     "numpy>=2.5.3",
     "pytest>=9.1.1",
     "ruff>=0.16.6",
