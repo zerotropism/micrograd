@@ -1,5 +1,4 @@
 import torch
-
 from graph import draw_dot
 from headers import MLP, Layer, Neuron, Value
 
