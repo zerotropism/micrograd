@@ -6,6 +6,12 @@ resolution-markers = [
     "python_full_version < '3.14'",
 ]
 
+[manifest]
+members = [
+    "micrograd",
+    "micrograd-rs",
+]
+
 [[package]]
 name = "anyio"
 version = "4.15.1"
@@ -1397,6 +1403,7 @@ dev = [
     { name = "ipykernel" },
     { name = "jupyter" },
     { name = "matplotlib" },
+    { name = "micrograd-rs" },
     { name = "nbstripout" },
     { name = "numpy" },
     { name = "pytest" },
@@ -1412,12 +1419,18 @@ dev = [
     { name = "ipykernel", specifier = ">=7.4.0" },
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "matplotlib", specifier = ">=3.11.2" },
+    { name = "micrograd-rs", editable = "micrograd-rs" },
     { name = "nbstripout", specifier = ">=0.8" },
     { name = "numpy", specifier = ">=2.5.4" },
     { name = "pytest", specifier = ">=9.1.1" },
     { name = "ruff", specifier = ">=0.17.3" },
     { name = "torch", specifier = ">=2.14.1" },
 ]
+
+[[package]]
+name = "micrograd-rs"
+version = "0.1.0"
+source = { editable = "micrograd-rs" }
 
 [[package]]
 name = "mistune"

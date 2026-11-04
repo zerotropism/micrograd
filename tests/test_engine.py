@@ -1,5 +1,7 @@
 """The engine is checked against numerical gradients, not just against itself."""
 
+import math
+
 import pytest
 
 from micrograd.engine import Value
@@ -57,6 +59,14 @@ def test_a_reused_value_accumulates_gradients_from_every_path() -> None:
     out = a + a
     out.backward()
     assert a.grad == 2.0
+
+
+def test_exp_accumulates_like_every_other_operation() -> None:
+    """exp assigned its gradient instead of adding it: a + exp(a) gave e, not e + 1."""
+    a = Value(1.0)
+    out = a.exp() + a
+    out.backward()
+    assert a.grad == pytest.approx(math.e + 1)
 
 
 def test_the_output_gradient_starts_at_one() -> None:

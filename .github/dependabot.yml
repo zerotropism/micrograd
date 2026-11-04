@@ -7,6 +7,13 @@ updates:
     groups:
       all-dependencies:
         patterns: ["*"]
+  - package-ecosystem: "cargo"
+    directory: "/micrograd-rs"
+    schedule:
+      interval: "weekly"
+    groups:
+      all-dependencies:
+        patterns: ["*"]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

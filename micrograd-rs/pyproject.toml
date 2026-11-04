@@ -1,0 +1,14 @@
+[project]
+name = "micrograd-rs"
+version = "0.1.0"
+description = "The micrograd engine ported to Rust, with a Python binding"
+requires-python = ">=3.12"
+license = "MIT"
+
+[build-system]
+requires = ["maturin>=1.16,<2"]
+build-backend = "maturin"
+
+[tool.maturin]
+features = ["python"]
+module-name = "micrograd_rs"
