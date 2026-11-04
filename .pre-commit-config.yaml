@@ -12,6 +12,15 @@ repos:
         entry: uv run --frozen ruff format
         language: system
         types_or: [python, pyi, jupyter]
+  # The Rust crate is formatted before it is committed, as CI checks it
+  - repo: local
+    hooks:
+      - id: cargo-fmt
+        name: cargo fmt
+        entry: cargo fmt --manifest-path micrograd-rs/Cargo.toml
+        language: system
+        types: [rust]
+        pass_filenames: false
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:

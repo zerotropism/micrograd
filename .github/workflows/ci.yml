@@ -12,6 +12,10 @@ jobs:
         with:
           enable-cache: true
       - run: uv python install 3.12
+      # The runner has Rust; the crate is checked on its own before uv builds it for Python
+      - run: cargo fmt --check --manifest-path micrograd-rs/Cargo.toml
+      - run: cargo clippy --manifest-path micrograd-rs/Cargo.toml --all-targets --features python -- -D warnings
+      - run: cargo test --manifest-path micrograd-rs/Cargo.toml
       - run: uv sync --all-groups
       - run: uv run ruff check .
       - run: uv run ruff format --check .
