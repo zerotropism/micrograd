@@ -212,7 +212,9 @@ class Value:
         out = Value(math.exp(x), (self,), "exp")
 
         def _backward():
-            self.grad = out.data * out.grad
+            # += like every other operation: a value that feeds exp and something else
+            # receives a gradient from both
+            self.grad += out.data * out.grad
 
         out._backward = _backward
 
