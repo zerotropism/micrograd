@@ -1,0 +1,21 @@
+[package]
+name = "micrograd-rs"
+version = "0.1.0"
+edition = "2024"
+# Edition 2024 needs Rust 1.85 or later
+rust-version = "1.85"
+description = "The micrograd engine ported to Rust, with a Python binding"
+license = "MIT"
+publish = false
+
+[lib]
+name = "micrograd_rs"
+# cdylib for the Python extension, rlib for cargo test and the Rust examples
+crate-type = ["cdylib", "rlib"]
+
+[features]
+# The binding is optional: cargo test builds the pure Rust engine, with no Python to link
+python = ["dep:pyo3"]
+
+[dependencies]
+pyo3 = { version = "0.30", features = ["extension-module", "abi3-py312"], optional = true }
